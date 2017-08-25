@@ -31,6 +31,73 @@ public class TimeSheetRepo {
 		return reversedList;
 	}
 	
+	public void writeTempWeekToFile(WeekOfHours week)
+	{
+		try (FileWriter writer = new FileWriter("templog.csv");
+	         BufferedWriter buff = new BufferedWriter(writer);
+	         CSVPrinter printer = new CSVPrinter(buff, CSVFormat.DEFAULT)) {
+			
+			 ArrayList<String> aSingleWeek = new ArrayList<String>();
+			 aSingleWeek.add(week.getDate());
+			 aSingleWeek.add(Double.toString(week.getMonHours()));
+			 aSingleWeek.add(Double.toString(week.getTuesHours()));
+			 aSingleWeek.add(Double.toString(week.getWedHours()));
+			 aSingleWeek.add(Double.toString(week.getThursHours()));
+			 aSingleWeek.add(Double.toString(week.getFriHours()));
+			 aSingleWeek.add(Double.toString(week.getSum()));
+			 
+			 printer.printRecord(aSingleWeek);
+			 
+		} catch (FileNotFoundException e) {
+           	System.err.println("Could not find file");
+   		} catch (IOException e) {
+   			System.err.println("Could not read file");
+   		} 
+	}
+	
+	public WeekOfHours getTempFileOfWeeks()
+	{
+		 	try (FileReader reader = new FileReader("templog.csv");
+	        BufferedReader br = new BufferedReader(reader)) {
+			
+			Iterable<CSVRecord> record = CSVFormat.DEFAULT.parse(br);
+			WeekOfHours week = new WeekOfHours();
+			
+			for (CSVRecord individualRecord : record)
+			{
+				week = new WeekOfHours();
+				week.setDate(individualRecord.get(0));
+				week.setMonHours(Double.valueOf(individualRecord.get(1)));
+				week.setTuesHours(Double.valueOf(individualRecord.get(2)));
+				week.setWedHours(Double.valueOf(individualRecord.get(3)));
+				week.setThursHours(Double.valueOf(individualRecord.get(4)));
+				week.setFriHours(Double.valueOf(individualRecord.get(5)));
+			}
+			return week;
+			
+		} catch (FileNotFoundException e) {
+        	System.err.println("Could not find file");
+        	WeekOfHours week = new WeekOfHours();
+			week.setDate("mm/dd/yyyy");
+			week.setMonHours(0.0);
+			week.setTuesHours(0.0);
+			week.setWedHours(0.0);
+			week.setThursHours(0.0);
+			week.setFriHours(0.0);
+			return week;
+		} catch (IOException e) {
+			System.err.println("Could not read file");
+			WeekOfHours week = new WeekOfHours();
+			week.setDate("mm/dd/yyyy");
+			week.setMonHours(0.0);
+			week.setTuesHours(0.0);
+			week.setWedHours(0.0);
+			week.setThursHours(0.0);
+			week.setFriHours(0.0);
+			return week;
+		}
+	}
+	
 	public void writeWeekToFile(WeekOfHours week)
 	{
 		try (FileWriter writer = new FileWriter("logofweeks.csv", true);

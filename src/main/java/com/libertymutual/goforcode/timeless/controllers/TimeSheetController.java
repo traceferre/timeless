@@ -16,11 +16,11 @@ import com.libertymutual.goforcode.timeless.services.TimeSheetRepo;
 @RequestMapping("/")
 public class TimeSheetController {
 	
-	//replace sum with method that calls from model
-	private double sum = 0;
+	private String buttonClick = "update";
+	private double sum = 0.0;
 	private ArrayList<Double> hours;
 	private TimeSheetRepo repo;
-	private String date;
+	private String date = "mm/dd/yyyy";
 	
 	public TimeSheetController(TimeSheetRepo repo)
 	{
@@ -30,23 +30,35 @@ public class TimeSheetController {
 	@GetMapping("")
 	public String sendBackToTimeSheet() 
 	{
-		return "redirect:/gettingSheet";
+//		return "redirect:/gettingSheet";
+		return "redirect:/timesheet";
 	}
 	
-	@GetMapping("gettingSheet")
-    public ModelAndView list() {
-        ModelAndView mv = new ModelAndView("timesheet/default");
-        List<WeekOfHours> weeks = repo.getFileOfWeeks();
-        mv.addObject("weeks", weeks);
-        mv.addObject("hasWeeksOfHours", !weeks.isEmpty());
-        return mv;
-    }
+//	@GetMapping("gettingSheet")
+//    public ModelAndView list() {
+//        ModelAndView mv = new ModelAndView("timesheet/default");
+//        List<WeekOfHours> weeks = repo.getFileOfWeeks();
+////        mv.addObject("weeks", weeks);
+////        mv.addObject("hasWeeksOfHours", !weeks.isEmpty());
+//        return mv;
+//    }
 	
 	@GetMapping("timesheet")
 	public ModelAndView getMyFullTimeSheet()
 	{
 		ModelAndView mv = new ModelAndView("timesheet/updated");
-		List<WeekOfHours> weeks = repo.getFileOfWeeks();
+		//List<WeekOfHours> weeks = repo.getFileOfWeeks();
+		List<WeekOfHours> weeks = new ArrayList<WeekOfHours>();        
+		WeekOfHours week = new WeekOfHours();
+		week = repo.getTempFileOfWeeks();
+		
+		if (buttonClick == "update") {
+			hours = week.getAllHours();
+			date = week.getDate();
+			sum = week.getSum();
+		}
+			
+		weeks = repo.getFileOfWeeks();
         mv.addObject("weeks", weeks);
         mv.addObject("hasWeeksOfHours", !weeks.isEmpty());
 		mv.addObject("date", date);
@@ -62,9 +74,12 @@ public class TimeSheetController {
 	@PostMapping("timesheet")
 	public ModelAndView updateMyTimeSheet(WeekOfHours week, String updateOrSubmit)
 	{		
+		ModelAndView mv = new ModelAndView("redirect:/timesheet");
 		if (updateOrSubmit.equals("update"))
 		{
-			ModelAndView mv = new ModelAndView("redirect:/timesheet");
+			//ModelAndView mv = new ModelAndView("redirect:/timesheet");
+			buttonClick = "update";
+			repo.writeTempWeekToFile(week);
 			date = week.getDate();
 			sum = week.getSum();
 			hours = week.getAllHours();
@@ -72,8 +87,16 @@ public class TimeSheetController {
 		}
 		else
 		{
-			ModelAndView mv = new ModelAndView("redirect:/gettingSheet");
+			//ModelAndView mv = new ModelAndView("redirect:/gettingSheet");
+			buttonClick = "submit";
 			repo.writeWeekToFile(week);
+			date = "mm/dd/yyyy";
+			sum = 0.0;
+			hours.set(0, 0.0);
+			hours.set(1, 0.0);
+			hours.set(2, 0.0);
+			hours.set(3, 0.0);
+			hours.set(4, 0.0);
 			return mv;
 		}
 	}
