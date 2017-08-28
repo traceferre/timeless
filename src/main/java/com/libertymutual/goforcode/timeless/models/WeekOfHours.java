@@ -11,38 +11,31 @@ public class WeekOfHours {
 	private double thursHours;
 	private double friHours;
 	
-	public String getDate()
-	{
+	public String getDate()	{
 		return this.date;
 	}
 	
-	public double getMonHours()
-	{
+	public double getMonHours()	{
 		return this.monHours;
 	}
 	
-	public double getTuesHours()
-	{
+	public double getTuesHours() {
 		return this.tuesHours;
 	}
 	
-	public double getWedHours()
-	{
+	public double getWedHours()	{
 		return this.wedHours;
 	}
 	
-	public double getThursHours()
-	{
+	public double getThursHours() {
 		return this.thursHours;
 	}
 	
-	public double getFriHours()
-	{
+	public double getFriHours() {
 		return this.friHours;
 	}
 	
-	public ArrayList<Double> getAllHours()
-	{
+	public ArrayList<Double> getAllHours() {
 		ArrayList<Double> hoursForTheWeek = new ArrayList<Double>();
 		hoursForTheWeek.add(monHours);
 		hoursForTheWeek.add(tuesHours);
@@ -52,38 +45,31 @@ public class WeekOfHours {
 		return hoursForTheWeek;
 	}
 	
-	public void setDate(String date)
-	{
+	public void setDate(String date) {
 		this.date = date;
 	}
 	
-	public void setMonHours(double monHours)
-	{
+	public void setMonHours(double monHours) {
 		this.monHours = monHours;
 	}
 	
-	public void setTuesHours(double tuesHours)
-	{
+	public void setTuesHours(double tuesHours) {
 		this.tuesHours = tuesHours;
 	}
 	
-	public void setWedHours(double wedHours)
-	{
+	public void setWedHours(double wedHours) {
 		this.wedHours = wedHours;
 	}
 	
-	public void setThursHours(double thursHours)
-	{
+	public void setThursHours(double thursHours) {
 		this.thursHours = thursHours;
 	}
 	
-	public void setFriHours(double friHours)
-	{
+	public void setFriHours(double friHours) {
 		this.friHours = friHours;
 	}
 	
-	public double getSum()
-	{
+	public double getSum() {
 		return this.monHours + this.tuesHours + this.wedHours + this.thursHours + this.friHours;
 	}
 }

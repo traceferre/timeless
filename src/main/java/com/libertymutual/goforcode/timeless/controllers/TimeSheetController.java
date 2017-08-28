@@ -22,32 +22,19 @@ public class TimeSheetController {
 	private TimeSheetRepo repo;
 	private String date = "mm/dd/yyyy";
 	
-	public TimeSheetController(TimeSheetRepo repo)
-	{
+	public TimeSheetController(TimeSheetRepo repo) {
 		this.repo = repo;
 	}
 	
 	@GetMapping("")
-	public String sendBackToTimeSheet() 
-	{
-//		return "redirect:/gettingSheet";
+	public String sendBackToTimeSheet() {
 		return "redirect:/timesheet";
 	}
 	
-//	@GetMapping("gettingSheet")
-//    public ModelAndView list() {
-//        ModelAndView mv = new ModelAndView("timesheet/default");
-//        List<WeekOfHours> weeks = repo.getFileOfWeeks();
-////        mv.addObject("weeks", weeks);
-////        mv.addObject("hasWeeksOfHours", !weeks.isEmpty());
-//        return mv;
-//    }
-	
 	@GetMapping("timesheet")
-	public ModelAndView getMyFullTimeSheet()
-	{
+	public ModelAndView getMyFullTimeSheet() {
+		
 		ModelAndView mv = new ModelAndView("timesheet/updated");
-		//List<WeekOfHours> weeks = repo.getFileOfWeeks();
 		List<WeekOfHours> weeks = new ArrayList<WeekOfHours>();        
 		WeekOfHours week = new WeekOfHours();
 		week = repo.getTempFileOfWeeks();
@@ -72,12 +59,10 @@ public class TimeSheetController {
 	}
 	
 	@PostMapping("timesheet")
-	public ModelAndView updateMyTimeSheet(WeekOfHours week, String updateOrSubmit)
-	{		
+	public ModelAndView updateMyTimeSheet(WeekOfHours week, String updateOrSubmit)	{		
 		ModelAndView mv = new ModelAndView("redirect:/timesheet");
-		if (updateOrSubmit.equals("update"))
-		{
-			//ModelAndView mv = new ModelAndView("redirect:/timesheet");
+		
+		if (updateOrSubmit.equals("update")) {
 			buttonClick = "update";
 			repo.writeTempWeekToFile(week);
 			date = week.getDate();
@@ -85,9 +70,7 @@ public class TimeSheetController {
 			hours = week.getAllHours();
 			return mv;
 		}
-		else
-		{
-			//ModelAndView mv = new ModelAndView("redirect:/gettingSheet");
+		else {
 			buttonClick = "submit";
 			repo.writeWeekToFile(week);
 			date = "mm/dd/yyyy";

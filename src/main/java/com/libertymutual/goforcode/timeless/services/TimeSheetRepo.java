@@ -20,19 +20,16 @@ import com.libertymutual.goforcode.timeless.models.WeekOfHours;
 @Service
 public class TimeSheetRepo {
 	
-	private ArrayList<WeekOfHours> reverser(List<WeekOfHours> allMyLogs)
-	{
+	private ArrayList<WeekOfHours> reverser(List<WeekOfHours> allMyLogs) {
 		ArrayList<WeekOfHours> reversedList = new ArrayList<WeekOfHours>();
 		
-		for (int i = (allMyLogs.size()-1); i >= 0; i--)
-		{
+		for (int i = (allMyLogs.size()-1); i >= 0; i--)	{
 			reversedList.add(allMyLogs.get(i));
 		}
 		return reversedList;
 	}
 	
-	public void writeTempWeekToFile(WeekOfHours week)
-	{
+	public void writeTempWeekToFile(WeekOfHours week) {
 		try (FileWriter writer = new FileWriter("templog.csv");
 	         BufferedWriter buff = new BufferedWriter(writer);
 	         CSVPrinter printer = new CSVPrinter(buff, CSVFormat.DEFAULT)) {
@@ -55,16 +52,14 @@ public class TimeSheetRepo {
    		} 
 	}
 	
-	public WeekOfHours getTempFileOfWeeks()
-	{
+	public WeekOfHours getTempFileOfWeeks()	{
 		 	try (FileReader reader = new FileReader("templog.csv");
 	        BufferedReader br = new BufferedReader(reader)) {
 			
 			Iterable<CSVRecord> record = CSVFormat.DEFAULT.parse(br);
 			WeekOfHours week = new WeekOfHours();
 			
-			for (CSVRecord individualRecord : record)
-			{
+			for (CSVRecord individualRecord : record) {
 				week = new WeekOfHours();
 				week.setDate(individualRecord.get(0));
 				week.setMonHours(Double.valueOf(individualRecord.get(1)));
@@ -130,8 +125,7 @@ public class TimeSheetRepo {
 			ArrayList<WeekOfHours> allMyLogs = new ArrayList<WeekOfHours>();
 			Iterable<CSVRecord> record = CSVFormat.DEFAULT.parse(br);
 			
-			for (CSVRecord individualRecord : record)
-			{
+			for (CSVRecord individualRecord : record) {
 				WeekOfHours week = new WeekOfHours();
 				week.setDate(individualRecord.get(0));
 				week.setMonHours(Double.valueOf(individualRecord.get(1)));
