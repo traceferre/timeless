@@ -20,6 +20,7 @@ import com.libertymutual.goforcode.timeless.models.WeekOfHours;
 @Service
 public class TimeSheetRepo {
 	
+	//reverses the list of logs to print the newest at the top of table
 	private ArrayList<WeekOfHours> reverser(List<WeekOfHours> allMyLogs) {
 		ArrayList<WeekOfHours> reversedList = new ArrayList<WeekOfHours>();
 		
@@ -29,21 +30,49 @@ public class TimeSheetRepo {
 		return reversedList;
 	}
 	
+	//fills a list with "week" data to prepare a single entry to be written to file
+	private ArrayList<String> fillAWeek(WeekOfHours week) {
+		ArrayList<String> aSingleWeek = new ArrayList<String>();
+		aSingleWeek.add(week.getDate());
+		aSingleWeek.add(Double.toString(week.getMonHours()));
+		aSingleWeek.add(Double.toString(week.getTuesHours()));
+		aSingleWeek.add(Double.toString(week.getWedHours()));
+		aSingleWeek.add(Double.toString(week.getThursHours()));
+		aSingleWeek.add(Double.toString(week.getFriHours()));
+		aSingleWeek.add(Double.toString(week.getSum()));
+		return aSingleWeek;
+	}
+	
+	//reads a single record and uses data to populate a single week object
+	private WeekOfHours readASingleRecord(CSVRecord individualRecord) {
+		WeekOfHours week = new WeekOfHours();
+		week.setDate(individualRecord.get(0));
+		week.setMonHours(Double.valueOf(individualRecord.get(1)));
+		week.setTuesHours(Double.valueOf(individualRecord.get(2)));
+		week.setWedHours(Double.valueOf(individualRecord.get(3)));
+		week.setThursHours(Double.valueOf(individualRecord.get(4)));
+		week.setFriHours(Double.valueOf(individualRecord.get(5)));
+		return week;
+	}
+	
+	//returns a week filled with defaulted values, called when no record exists in temporary file
+	private WeekOfHours setDefaultWeek() {
+		WeekOfHours week = new WeekOfHours();
+		week.setDate("mm/dd/yyyy");
+		week.setMonHours(0.0);
+		week.setTuesHours(0.0);
+		week.setWedHours(0.0);
+		week.setThursHours(0.0);
+		week.setFriHours(0.0);
+		return week;
+	}
+	
 	public void writeTempWeekToFile(WeekOfHours week) {
 		try (FileWriter writer = new FileWriter("templog.csv");
 	         BufferedWriter buff = new BufferedWriter(writer);
-	         CSVPrinter printer = new CSVPrinter(buff, CSVFormat.DEFAULT)) {
-			
-			 ArrayList<String> aSingleWeek = new ArrayList<String>();
-			 aSingleWeek.add(week.getDate());
-			 aSingleWeek.add(Double.toString(week.getMonHours()));
-			 aSingleWeek.add(Double.toString(week.getTuesHours()));
-			 aSingleWeek.add(Double.toString(week.getWedHours()));
-			 aSingleWeek.add(Double.toString(week.getThursHours()));
-			 aSingleWeek.add(Double.toString(week.getFriHours()));
-			 aSingleWeek.add(Double.toString(week.getSum()));
+	         CSVPrinter printer = new CSVPrinter(buff, CSVFormat.DEFAULT)) {			
 			 
-			 printer.printRecord(aSingleWeek);
+			 printer.printRecord(fillAWeek(week));
 			 
 		} catch (FileNotFoundException e) {
            	System.err.println("Could not find file");
@@ -60,36 +89,16 @@ public class TimeSheetRepo {
 			WeekOfHours week = new WeekOfHours();
 			
 			for (CSVRecord individualRecord : record) {
-				week = new WeekOfHours();
-				week.setDate(individualRecord.get(0));
-				week.setMonHours(Double.valueOf(individualRecord.get(1)));
-				week.setTuesHours(Double.valueOf(individualRecord.get(2)));
-				week.setWedHours(Double.valueOf(individualRecord.get(3)));
-				week.setThursHours(Double.valueOf(individualRecord.get(4)));
-				week.setFriHours(Double.valueOf(individualRecord.get(5)));
+				week = readASingleRecord(individualRecord);
 			}
 			return week;
 			
 		} catch (FileNotFoundException e) {
         	System.err.println("Could not find file");
-        	WeekOfHours week = new WeekOfHours();
-			week.setDate("mm/dd/yyyy");
-			week.setMonHours(0.0);
-			week.setTuesHours(0.0);
-			week.setWedHours(0.0);
-			week.setThursHours(0.0);
-			week.setFriHours(0.0);
-			return week;
+        	return setDefaultWeek();
 		} catch (IOException e) {
 			System.err.println("Could not read file");
-			WeekOfHours week = new WeekOfHours();
-			week.setDate("mm/dd/yyyy");
-			week.setMonHours(0.0);
-			week.setTuesHours(0.0);
-			week.setWedHours(0.0);
-			week.setThursHours(0.0);
-			week.setFriHours(0.0);
-			return week;
+			return setDefaultWeek();
 		}
 	}
 	
@@ -98,17 +107,8 @@ public class TimeSheetRepo {
 		try (FileWriter writer = new FileWriter("logofweeks.csv", true);
 	         BufferedWriter buff = new BufferedWriter(writer);
 	         CSVPrinter printer = new CSVPrinter(buff, CSVFormat.DEFAULT)) {
-			
-			 ArrayList<String> aSingleWeek = new ArrayList<String>();
-			 aSingleWeek.add(week.getDate());
-			 aSingleWeek.add(Double.toString(week.getMonHours()));
-			 aSingleWeek.add(Double.toString(week.getTuesHours()));
-			 aSingleWeek.add(Double.toString(week.getWedHours()));
-			 aSingleWeek.add(Double.toString(week.getThursHours()));
-			 aSingleWeek.add(Double.toString(week.getFriHours()));
-			 aSingleWeek.add(Double.toString(week.getSum()));
 			 
-			 printer.printRecord(aSingleWeek);
+			 printer.printRecord(fillAWeek(week));
 			 
 		} catch (FileNotFoundException e) {
            	System.err.println("Could not find file");
@@ -127,16 +127,12 @@ public class TimeSheetRepo {
 			
 			for (CSVRecord individualRecord : record) {
 				WeekOfHours week = new WeekOfHours();
-				week.setDate(individualRecord.get(0));
-				week.setMonHours(Double.valueOf(individualRecord.get(1)));
-				week.setTuesHours(Double.valueOf(individualRecord.get(2)));
-				week.setWedHours(Double.valueOf(individualRecord.get(3)));
-				week.setThursHours(Double.valueOf(individualRecord.get(4)));
-				week.setFriHours(Double.valueOf(individualRecord.get(5)));
+				week = readASingleRecord(individualRecord);
 				allMyLogs.add(week);
 			}
-			//reverse order of list
+			
 			allMyLogs = reverser(allMyLogs);
+			
 			return allMyLogs;
 			
 		} catch (FileNotFoundException e) {

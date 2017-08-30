@@ -65,9 +65,6 @@ public class TimeSheetController {
 		if (updateOrSubmit.equals("update")) {
 			buttonClick = "update";
 			repo.writeTempWeekToFile(week);
-			date = week.getDate();
-			sum = week.getSum();
-			hours = week.getAllHours();
 			return mv;
 		}
 		else {
